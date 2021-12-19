@@ -7,7 +7,7 @@ jobs:
       - name: Compile LaTeX
         uses: xu-cheng/latex-action@v2
         with:
-          working_directory: ../../paper
+          working_directory: paper/
           root_file: main.tex
       - name: Upload paper to releases
         uses: softprops/action-gh-release@v0.1.14
