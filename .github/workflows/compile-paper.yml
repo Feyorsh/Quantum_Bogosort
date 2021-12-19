@@ -14,5 +14,5 @@ jobs:
       - name: Upload paper to releases
         uses: softprops/action-gh-release@v0.1.14
         with:
-          files: /github/workspace/main.pdf
+          files: ${{ github.workspace }} 
           generate_release_notes: true
