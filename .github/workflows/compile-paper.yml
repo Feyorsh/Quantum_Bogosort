@@ -10,6 +10,7 @@ jobs:
         with:
           working_directory: paper/
           root_file: main.tex
+          latexmk_shell_escape: true
       - name: Upload paper to releases
         uses: softprops/action-gh-release@v0.1.14
         with:
