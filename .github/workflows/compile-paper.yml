@@ -1,0 +1,16 @@
+name: Compile Paper
+on: [push]
+jobs:
+  build_latex:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Compile LaTeX
+        uses: xu-cheng/latex-action@v2
+        with:
+          working_directory: paper
+          root_file: main.tex
+      - name: Upload paper to releases
+        uses: softprops/action-gh-release@v0.1.14
+        with:
+          files: main.pdf
+          generate_release_notes: true

@@ -1,0 +1,123 @@
+\documentclass[preview]{standalone}
+\usepackage{graphicx}
+% xyqcirc stuff
+\usepackage[frame,line,arrow,matrix,tips]{xy}	% all that is usually necessary
+\begin{document}
+% Note that I had to edit anti-controls manually --- Potentially add a LaTex command for anti-controls in the future
+% File:	  conceptual_circuit.qasm
+% Date:	  17-Nov-21
+% Author: G. Huebner
+%
+% Sample qasm input file - three-qubit FT QEC
+% circuit with syndrome measurement
+% 
+%     def ry,0,'\txt{R\textsubscript{y}}'
+%     def cry,1,'\txt{R\textsubscript{y}}'
+%     def cry2,2,'\txt{R\textsubscript{y}}'
+% 
+%     defbox chall,4,1,'\txt{H\textsubscript{ALL}}'
+%     defbox chall1,4,2,'\txt{H\textsubscript{ALL}}'
+%     def chall2,3,'\txt{H\textsubscript{ALL}}'
+% 
+%     qubit q0,0
+%     qubit q1,0
+%     qubit q2,0
+%     qubit q3,0
+% 
+%     ry q0
+%     chall q0,q1,q2,q3
+%   X q0
+% 
+%     cry q0,q1
+%     chall1 q0,q1,q2,q3
+%   X q1
+% 
+%     cry2 q0,q1,q2
+%     chall2 q0,q1,q2,q3
+%   X q2
+% 
+%    nop q0
+%    nop q1
+%    nop q3
+% 
+%     measure q0
+%     measure q1
+%     measure q2
+%     measure q3
+%  Time 01:
+%    Gate 00 ry(q0)
+%  Time 02:
+%    Gate 01 chall(q0,q1,q2,q3)
+%  Time 03:
+%    Gate 02 cry(q0,q1)
+%  Time 04:
+%    Gate 03 chall1(q0,q1,q2,q3)
+%  Time 05:
+%    Gate 04 cry2(q0,q1,q2)
+%  Time 06:
+%    Gate 05 chall2(q0,q1,q2,q3)
+%  Time 07:
+%    Gate 06 measure(q0)
+%    Gate 07 measure(q1)
+%    Gate 08 measure(q2)
+%    Gate 09 measure(q3)
+
+% Qubit circuit matrix:
+%
+% q0: gAxA, gBxA, gCxA, gDxA, gExA, gFxA, gGxA, N  
+% q1: n  , gBxB, gCxB, gDxB, gExB, gFxB, gGxB, N  
+% q2: n  , gBxC, n  , gDxC, gExC, gFxC, gGxC, N  
+% q3: n  , gBxD, n  , gDxD, n  , gFxD, gGxD, N  
+
+\input{xyqcirc.tex}
+
+% definitions for the circuit elements
+
+\def\gAxA{\op{\txt{R\textsubscript{y}}}\w\A{gAxA}}
+\def\gBxB{\gnqubit{\txt{H\textsubscript{ALL}}}{dd}\w\A{gBxB}}
+\def\gBxC{\gspace{\txt{H\textsubscript{ALL}}}\w\A{gBxC}}
+\def\gBxD{\gspace{\txt{H\textsubscript{ALL}}}\w\A{gBxD}}
+\def\gBxA{\b\w\A{gBxA}}
+\def\gCxA{\b\w\A{gCxA}}
+\def\gCxB{\op{\txt{R\textsubscript{y}}}\w\A{gCxB}}
+\def\gDxC{\gnqubit{\txt{H\textsubscript{ALL}}}{d}\w\A{gDxC}}
+\def\gDxD{\gspace{\txt{H\textsubscript{ALL}}}\w\A{gDxD}}
+\def\gDxA{\b\w\A{gDxA}}
+\def\gDxB{\b\w\A{gDxB}}
+\def\gExA{\b\w\A{gExA}}
+\def\gExB{\b\w\A{gExB}}
+\def\gExC{\op{\txt{R\textsubscript{y}}}\w\A{gExC}}
+\def\gFxA{\b\w\A{gFxA}}
+\def\gFxB{\b\w\A{gFxB}}
+\def\gFxC{\b\w\A{gFxC}}
+\def\gFxD{\op{\txt{H\textsubscript{ALL}}}\w\A{gFxD}}
+\def\gGxA{\meter\w\A{gGxA}}
+\def\gGxB{\meter\w\A{gGxB}}
+\def\gGxC{\meter\w\A{gGxC}}
+\def\gGxD{\meter\w\A{gGxD}}
+
+% definitions for bit labels and initial states
+
+\def\bA{\qv{q_{0}}{0}}
+\def\bB{\qv{q_{1}}{0}}
+\def\bC{\qv{q_{2}}{0}}
+\def\bD{\qv{q_{3}}{0}}
+
+% The quantum circuit as an xymatrix
+
+\xymatrix@R=5pt@C=10pt{
+    \bA & \gAxA &\gBxA &\gCxA &\gDxA &\gExA &\gFxA &\gGxA &\N  
+\\  \bB & \n   &\gBxB &\gCxB &\gDxB &\gExB &\gFxB &\gGxB &\N  
+\\  \bC & \n   &\gBxC &\n   &\gDxC &\gExC &\gFxC &\gGxC &\N  
+\\  \bD & \n   &\gBxD &\n   &\gDxD &\n   &\gFxD &\gGxD &\N  
+%
+% Vertical lines and other post-xymatrix latex
+%
+\ar@{-}"gBxB";"gBxA"
+\ar@{-}"gCxB";"gCxA"
+\ar@{-}"gDxC";"gDxA"\ar@{-}"gDxC";"gDxB"
+\ar@{-}"gExC";"gExA"\ar@{-}"gExC";"gExB"
+\ar@{-}"gFxD";"gFxA"\ar@{-}"gFxD";"gFxB"\ar@{-}"gFxD";"gFxC"
+}
+
+\end{document}
