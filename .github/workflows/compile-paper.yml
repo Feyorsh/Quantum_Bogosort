@@ -4,6 +4,7 @@ jobs:
   build_latex:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2.4.0
       - name: Compile LaTeX
         uses: xu-cheng/latex-action@v2
         with:
