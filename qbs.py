@@ -44,12 +44,21 @@ def even_superpositon(circuit, register, controls, ancilla, P):
     even_superpositon(circuit, register[1:], controls, ancilla, extra_parts)
 
 
+def isSorted(ls):
+    if not ls:
+        return True
+
+    prev = ls[0]
+    for i in ls:
+        if i < prev:
+            return False
+        prev = i
+    return True
+
+
 if __name__ == "__main__":
     set = [6, 10, 2589, 0, 47, 178, 324]
     possibilities = list(permutations(set))
-    set.sort()
-
-    sorted = tuple(set)
 
     parts = len(possibilities)
     length = ceil(log(parts, 2))
@@ -73,7 +82,7 @@ if __name__ == "__main__":
                 index = int(num[::-1], 2)
 
         if index is not None:
-            if possibilities[index] == sorted:
+            if isSorted(possibilities[index]):
                 break
     end = perf_counter()
 
