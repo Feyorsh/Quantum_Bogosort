@@ -18,6 +18,7 @@
 \usepackage{float}
 \usepackage[colorlinks=true, allcolors=blue]{hyperref}
 \usepackage{hypcap}
+\usepackage{fancyhdr}
 
 % xyqcirc stuff
 \usepackage[frame,line,arrow,matrix,tips]{xy}	% all that is usually necessary
@@ -26,13 +27,35 @@
 
 \title{Quantum Bogosort}
 \author{George Huebner}
-\date{December 4, 2021}
+\date{March 18, 2022}
 
 \begin{document}
+\pagenumbering{gobble}
+
+\begin{titlepage}
 \maketitle
+\centering
+\large Chicago STEM Fair, Computer Science Research, Design Category \\
+\vspace{3em}
+\huge Sponsor \\
+\vspace{1em}
+\large Michael Caines \hspace{15em}
+\end{titlepage}
+
+{
+\hypersetup{hidelinks}
+\tableofcontents
+}
+\pagebreak
+
+\pagestyle{fancy}
+\fancyhead[R]{\textit{Quantum Bogosort}, Huebner}
+\fancyhead[L]{}
+
+\pagenumbering{arabic}
 
 \begin{abstract}
-Gag algorithms are a staple of computer science and provide many a good chuckle. Take, for instance, MiracleSort\textsuperscript{\cite{thompson_2013}}, an algorithm that relies on alpha particle emission to cause erroneous bit flips to sort the list:
+\noindent Gag algorithms are a staple of computer science and provide many a good chuckle. Take, for instance, MiracleSort\textsuperscript{\cite{thompson_2013}}, an algorithm that relies on alpha particle emission to cause erroneous bit flips to sort a list:
 \begin{minted}{python}
 while isSorted(unsorted_list) is False:
     time.sleep(1000)
@@ -49,7 +72,7 @@ while isSorted(unsorted_list) is False:
     random.shuffle(unsorted_list)
 \end{minted}
 
-It has an average time complexity of $ O((n+1)!) $ and the nondeterministic (traditional) method has an unbounded worst case time complexity for any non-trivial list.
+\noindent It has an average time complexity of $ O((n+1)!) $ and the nondeterministic (traditional) method has an unbounded worst case time complexity for any non-trivial list.
 
 Quantum Bogosort\textsuperscript{\cite{ryder_2018}}, then, is a variation on classical bogosort. Based on the \href{https://www.pbs.org/wgbh/nova/manyworlds/pdf/dissertation.pdf}{many worlds} interpretation of quantum mechanics, QBS proposes that a quantum computer can superimpose all possible permutations of a list and destroy any universe in which a sorted list does not exist, thus sorting the list in $ O(1) $ time. Because parallel universes are non-communicating, there's no way to know the list is sorted other than by the principle of quantum necessity. The algorithm that satisfies subscribers of the Copenhagen interpretation (where wave functions collapse) is essentially the same thing, but the quantum circuit must be run until the list is sorted.
 
@@ -283,7 +306,7 @@ For example, $i = 256$ creates a circuit with depth 2 and width 17, but $i = 255
     \label{fig:resources}
 \end{figure}
 \vspace{10mm}
-\noindent With $o = $ \mintinline{python}{bin(n).count('1')}, we have a time complexity of $O(o)$ for many-worlds and $O(o \cdot (n+1)!)$ for Copenhagen.
+\noindent With $o = $ \mintinline{python}{bin(n).count('1')}, we have a time complexity of $O(o)$ for many-worlds and $O(o \cdot n!)$ for Copenhagen.
 
 \subsubsection{Error Rate}
 Of course, the main problem with this ballooning circuit size is the fidelity of the measurement; we work with imperfect machines and error rates can compound over time to make a measurement meaningless. 
@@ -308,11 +331,19 @@ Using QRNG algorithm defined in \ref{qrng}
 from itertools import permutations
 from time import perf_counter
 
+def isSorted(ls):
+    if not ls:
+        return True
+
+    prev = ls[0]
+    for i in ls:
+        if i < prev:
+            return False
+        prev = i
+    return True
+
 unsorted_list = [6, 10, 2589, 0, 47, 178, 324]
 possibilities = list(permutations(unsorted_list))
-unsorted_list.sort()
-
-sorted = tuple(unsorted_list)
 
 parts = len(possibilities)
 length = ceil(log(parts, 2))
@@ -337,7 +368,7 @@ while True:
             index = benum
 
     if index is not None:
-        if possibilities[index] == sorted:
+        if isSorted(possibilities[index]):
             break
 end = perf_counter()
 
