@@ -1,0 +1,86 @@
+\documentclass[12pt]{article}
+
+% Language setting
+% Replace `english' with e.g. `spanish' to change the document language
+\usepackage[english]{babel}
+
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{fancyhdr}
+%\renewcommand{\headrulewidth}{0pt}
+\usepackage{blindtext}
+\usepackage{minted}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage{braket}
+
+\usepackage{etoolbox}
+\patchcmd{\thebibliography}{\section*{\refname}}{}{}{}
+
+% Set page size and margins
+% Replace `letterpaper' with`a4paper' for UK/EU standard size
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+\begin{document}
+
+\pagestyle{fancy}
+\fancyhead[L]{George Huebner, Grade 12 \\ Walter Payton College Prep}
+\fancyhead[R]{}
+
+\centering \null
+\vspace{2em}
+\Huge ISEF Research Plan \\
+\vspace{2em}
+\raggedright \normalsize
+
+\section{Project Rationale}
+Quantum computers provide exciting new possibilities in the field of computer science --- superpolynomial speedups, quantum machine learning, and chemistry simulations are among the many promising breakthroughs quantum computers can achieve. Now is a particularly exciting time in the field of quantum information theory because hardware is finally catching up to decades of theory.
+%--- the first undisputed demonstration of quantum supremacy (solving a problem that a classical computer cannot in a useful amount of time) was achieved in 2020.
+But for all the hype surrounding quantum computing, relatively few programmers know how to harness their power. \par% many find the advanced mathematics and physics surrounding the subject to be difficult and off-putting. \\
+
+However, just as one doesn't need to fully understand the nuances of silicon wafer manufacturing in order to program a classical computer, programmers do not need to fully understand the underlying quantum mechanics in order to program a quantum computer. Knowing even a small amount of quantum information theory can enable researchers to utilize the power of quantum computers. Therein lies the goal of the ``quantum bogosort'' algorithm: to spread awareness of quantum computing with a quirky real-world algorithm that beginners can understand and appreciate.
+
+%Isaac Chuang's ``Quantum Computation and Quantum Information'' provides a more 
+
+%by creating a non-trivial algorithm that teaches basis gates, basic qubit manipulation, superposition and entanglement
+%the goal of this project is to help teach quantum computing fundamentals in a way that engages 
+
+\section{Engineering Goal}
+Implement the joke ``quantum bogosort'' algorithm using a non-trivial circuit that covers most fundamental quantum computing concepts. The algorithm should be sufficiently complex that it presents an interesting challenge to beginners, but not so difficult that it becomes incomprehensible. The reason a joke algorithm was chosen instead of an integer factorization or quantum error correction routine was to create something novel and, most importantly, fun! \par
+
+Because even relatively simple quantum algorithms (i.e. Deutsch-Jozsa) can be challenging for beginners, our algorithm will be designed exclusively around basic gates.
+Additionally, although it would be possible to create a trivial QRNG (\textbf{q}uantum \textbf{r}andom \textbf{n}umber \textbf{g}enerator) with a probability $\frac{1}{2^{n}} \ | \ n \in \mathbb{Z}$, this doesn't accomplish the stated goal of teaching fundamentals because it only uses one gate.
+
+%Notably, a key tenet that is not covered by the quantum bogosort algorithm is amplitude interference. To rectify this, a more general algorithm was created:
+%We can rewrite any list (sorted or not) as a dictionary where each unique element is a key with value equal to the number of its occurrences. For example, the list $[4, 6, 7, 4, 8, 8]$ could be rewritten as $\{4{:} \ 2, 6{:} \ 1, 7{:} \ 1, 8{:} \ 2 \}$. 
+%$$ \sum_{x=0}^{N-1} \frac{1}{\sqrt{N}} \ket{x_{BE}} $$
+
+\section{Procedure}
+
+
+%\subsection{Safety}
+%\blindtext
+
+\subsection{Experimentation}
+\begin{enumerate}
+    \item Research how to integrate quantum into classical bogosort and craft desired qubit state
+    \item Design conceptual circuit and classical list processing routine
+    \item Implement conceptual circuit (using Qiskit)
+    \item Continue to iterate on design, using quantum simulators for testing
+    \item Resources permitting, collect data on real quantum hardware (using IBM Quantum)
+\end{enumerate}
+
+\subsection{Data Analysis}
+The correctness of the algorithm can be verified by analyzing the amplitudes of statevectors for a given circuit, because circuits are ultimately just compositions of matrices. Consequently, statistical analysis to determine if results are due to chance is not required. This is also why simulators generally suffice in the event quantum hardware is inaccessible --- choosing an output state with a classically generated random number may not be truly random, but it's certainly random \textit{enough}.  \\
+The random number generated by the quantum circuit is used to select one of the permutations of the list, which will then be checked to see if it is sorted. Note that the implementation of \href{https://docs.python.org/3/library/itertools.html?highlight=permutation#itertools.permutations}{\mintinline{python}{permutations()}} can be arbitrary as long as it is a pure function --- that is, for a given list, the order of the permutations doesn't matter, but it must be consistent.
+
+%\section{Project Summary}
+%\blindtext
+
+\section{Bibliography}
+
+\bibliographystyle{ieeetr} % abbrv or apalike
+\nocite{*}
+\bibliography{sources}
+
+\end{document}

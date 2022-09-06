@@ -26,21 +26,28 @@
 \doublespacing
 
 \title{Quantum Bogosort}
-\author{George Huebner}
-\date{March 18, 2022}
+\author{George Huebner}% (Grade 12), Michael Caines (Teacher sponsor)}
+\date{May 7, 2022}
 
 \begin{document}
+\renewcommand{\abstractname}{Preface}
 \pagenumbering{gobble}
 
 \begin{titlepage}
 \maketitle
 \centering
-\large Chicago STEM Fair, Computer Science Research, Design Category \\
-\vspace{3em}
-\huge Sponsor \\
-\vspace{1em}
-\large Michael Caines \hspace{15em}
+\large Walter Payton College Prep, Chicago IL, United States \\
+ISEF Systems Software/Algorithms (SOFT055)% \\
+%\large Illinois STEM Fair, Computer Science Research, Design Category \\
+%\vspace{3em}
+%\huge Sponsor \\
+%\vspace{1em}
+%\large Michael Caines \hspace{15em}
 \end{titlepage}
+
+\pagestyle{fancy}
+\fancyhead[R]{Huebner: \textit{Quantum Bogosort} (SOFT055)}
+\fancyhead[L]{}
 
 {
 \hypersetup{hidelinks}
@@ -48,14 +55,10 @@
 }
 \pagebreak
 
-\pagestyle{fancy}
-\fancyhead[R]{\textit{Quantum Bogosort}, Huebner}
-\fancyhead[L]{}
-
 \pagenumbering{arabic}
 
 \begin{abstract}
-\noindent Gag algorithms are a staple of computer science and provide many a good chuckle. Take, for instance, MiracleSort\textsuperscript{\cite{thompson_2013}}, an algorithm that relies on alpha particle emission to cause erroneous bit flips to sort a list:
+\noindent Joke algorithms are a staple of computer science and provide many a good chuckle. Take, for instance, MiracleSort\textsuperscript{\cite{thompson_2013}}, an algorithm that relies on alpha particle emission to cause erroneous bit flips to sort a list:
 \begin{minted}{python}
 while isSorted(unsorted_list) is False:
     time.sleep(1000)
@@ -65,33 +68,32 @@ Despite their apparent uselessness, joke algorithms provide valuable insight int
 
 \section{Introduction}
 
-Classic Bogosort is a joke sorting algorithm where a list is randomly permuted and checked to see if it is sorted. Essentially, in pseudocode:
+Classic Bogosort is a joke sorting algorithm where a list is randomly permuted and checked to see if it is sorted. In pseudocode:
 
 \begin{minted}{python}
 while isSorted(unsorted_list) is False:
     random.shuffle(unsorted_list)
 \end{minted}
 
-\noindent It has an average time complexity of $ O((n+1)!) $ and the nondeterministic (traditional) method has an unbounded worst case time complexity for any non-trivial list.
+\noindent It has an average time complexity of $O((n+1)!)$ and the nondeterministic (traditional) method has an unbounded worst case time complexity for any non-trivial list.
 
-Quantum Bogosort\textsuperscript{\cite{ryder_2018}}, then, is a variation on classical bogosort. Based on the \href{https://www.pbs.org/wgbh/nova/manyworlds/pdf/dissertation.pdf}{many worlds} interpretation of quantum mechanics, QBS proposes that a quantum computer can superimpose all possible permutations of a list and destroy any universe in which a sorted list does not exist, thus sorting the list in $ O(1) $ time. Because parallel universes are non-communicating, there's no way to know the list is sorted other than by the principle of quantum necessity. The algorithm that satisfies subscribers of the Copenhagen interpretation (where wave functions collapse) is essentially the same thing, but the quantum circuit must be run until the list is sorted.
+Quantum Bogosort\textsuperscript{\cite{the_other_tree_2009}} (QBS), then, is a variation on classical bogosort. Based on the \href{https://www.pbs.org/wgbh/nova/manyworlds/pdf/dissertation.pdf}{many worlds} interpretation of quantum mechanics, QBS proposes that a quantum computer can superimpose all possible permutations of a list and destroy any universe in which a sorted list does not exist, thus sorting the list in $ O(1) $ time. Because parallel universes are non-communicating, there's no way to know the list is sorted other than by the principle of quantum necessity. The algorithm that satisfies subscribers of the Copenhagen interpretation (where wave functions collapse) uses the same algorithm, but the quantum circuit must be run until the list is sorted.
 
 Classical computers can already sort lists with a lower bound time complexity of $\Omega (N \log_2 N)$. Consequently, research into quantum sorting algorithms has been minimal, as the only optimizations possible are reducing space complexity. Because quantum computers do not have anywhere near enough qubits (let alone the error resilience) to realize this reduced complexity, sorting has been left to classical computers.
 
 \section{Background}
-Most people are likely unfamiliar with quantum computing and its associated quirks, so a minor detour is in order to explain the technologies that will be used to test the QBS algorithm. Explaining the quantum mechanics that underlie this project is well beyond the scope of a math symposium, though, so let the physics enthusiast proceed carefully.
+Most people are likely unfamiliar with quantum computing and its associated quirks, so a minor detour is in order to explain the technologies that will be used to develop and test QBS. This is not meant to be a complete explaination of the quantum mechanics that underlie this project, though, so let the physics enthusiast proceed carefully.
 
 \subsection{Quantum Computers}
 Quantum computers should be thought of not as processors that parse instructions, but rather circuits composed of gates that operate on a group of qubits (\textbf{qu}antum \textbf{bit}, the quantum unit of information). While revolutionary, quantum computers only achieve speedups in certain applications, and have not yet cleared a benchmark of true quantum supremacy due to current hardware implementations. Current noisy intermediate scale quantum (NISQ) computers are highly error prone and have comparatively few qubits and are better thought of as a separate processing unit to be orchestrated by a classical computer.
-
 \subsection{Qubits}
 Qubits have quantum properties of superposition, entanglement, and interference that distinguish them from classical bits. Whereas a classical bit is either 1 or 0, a qubit is in a superposition of 1 and 0, which are defined as the following kets:
 $$ \ket{0} = \begin{bmatrix} 1 \\ 0 \end{bmatrix} \text{ (Classical 0)} $$
 $$ \ket{1} = \begin{bmatrix} 0 \\ 1 \end{bmatrix} \text{ (Classical 1)} $$
-Qubit superpositon can be thought of as having a certain amount (amplitude) of 'one-ness' and 'zero-ness' that can be represented as so:
+Qubit superpositon can be thought of as having a certain amount (amplitude) of `one-ness' and `zero-ness' that can be represented as so:
 $$ \ket{x} = \alpha \ket{0} + \beta \ket{1} \ | \ \text{ Probability}_{\ket{0}} = | \alpha |^2 \text{, } \text{ Probability}_{\ket{1}} = | \beta |^2 $$
 %Note that $|x|$ here represents magnitude as $\alpha$ and $\beta$ are imaginary.
-To actually make use of qubits, they must be measured, which collapses them to either $\ket{0}$ or $\ket{1}$. This is a probabilistic, quantum event, hence the probability\textsubscript{$\ket{x}$}. It is helpful to consider the \hyperref[fig:bsphere]{Bloch sphere} when analyzing qubit state and rotation around the Pauli axes; essentially, the 'North Pole' is defined as $\ket{0}$ and the 'South Pole' is defined as $\ket{1}$. The 'equator,' then, would be an even superposition of $\ket{0}$ and $\ket{1}$.
+To actually make use of qubits, they must be measured, which collapses them to either $\ket{0}$ or $\ket{1}$. This is a probabilistic, quantum event, hence the probability\textsubscript{$\ket{x}$}. It is helpful to consider the \hyperref[fig:bsphere]{Bloch sphere} when analyzing qubit state and rotation around the Pauli axes; essentially, the `North Pole' is defined as $\ket{0}$ and the `South Pole' is defined as $\ket{1}$. The `equator,' then, would be an even superposition of $\ket{0}$ and $\ket{1}$.
 
 \begin{figure}[H]
     \centering
@@ -110,8 +112,7 @@ $$ \text{H} = \text{R}_{\text{y}} (\frac{\pi}{2}) \text{Z} \ \ \ \text{(Hadamard
 $$ \text{H}(\ket{0}) = \frac{1}{\sqrt{2}} \ket{0} + \frac{1}{\sqrt{2}} \ket{1} = \ket{+} $$
 $$ \text{H}(\ket{1}) = \frac{1}{\sqrt{2}} \ket{0} - \frac{1}{\sqrt{2}} \ket{1} = \ket{-} $$
 Notice that R\textsubscript{y} is an arbitrary rotation around the Pauli Y-axis; Similarly, R\textsubscript{x} and R\textsubscript{z} allow arbitrary rotations along the X- and Z-axes, respectively.\\
-Multiple qubits can be used together for entanglement and amplitude interference, and a group of qubits is called a \textit{register}. Although a register can be simplified into a single tensor by taking the tensor product of the qubits in the register, keeping registers in kets makes the math much simpler. \\
-Bra-ket (Dirac) notation is used as Kronecker products quickly become unwieldy when dealing with large qubit registers.
+Multiple qubits can be used together for entanglement and amplitude interference, and a group of qubits is called a \textit{register}. Although a register can be simplified into a single tensor by taking the tensor product of the qubits in the register, keeping registers in kets makes the math much simpler. Bra-ket (Dirac) notation is used as Kronecker products quickly become unwieldy when dealing with large qubit registers.
 
 \begin{figure}[h]
     \centering
@@ -121,7 +122,7 @@ Bra-ket (Dirac) notation is used as Kronecker products quickly become unwieldy w
 \end{figure}
 
 \subsection{Entanglement}
-Qubit gates can also be controlled if another qubit is $\ket{1}$ (similar to an 'if' clause in a classical programming language). This allows for multiple qubits to be entangled with each other, essentially tying the 'fate' of the qubits together so that they can no longer be thought of as individual qubits but rather a single system. Measuring one qubit will also collapse the other entangled qubits, even if they were never observed. A famous example of this is Schr\"odinger's cat. In this thought experiment, the quantum event of a radioactive substance decaying is entangled with the fate of the cat. If the cat dies, the radioactive substance must have decayed, and if the radioactive substance did not decay, the cat must be alive (or, at the very least, not killed by poison).
+Qubit gates can also be controlled if another qubit is $\ket{1}$ (similar to an `if' clause in a classical programming language). This allows for multiple qubits to be entangled with each other, essentially tying the 'fate' of the qubits together so that they can no longer be thought of as individual qubits but rather a single system. Measuring one qubit will also collapse the other entangled qubits, even if they were never observed. A famous example of this is Schr\"odinger's cat. In this thought experiment, the quantum event of a radioactive substance decaying is entangled with the fate of the cat. If the cat dies, the radioactive substance must have decayed, and if the radioactive substance did not decay, the cat must be alive (or, at the very least, not killed by poison).
 
 \section{Algorithm Design}
 The implementation will be written using Qiskit, a Python framework for creating, running and simulating quantum circuits, and tested with the IBMQ Aer and Manila simulators.
@@ -144,11 +145,11 @@ circuit = QuantumCircuit([QuantumRegister(size) for _ in range(len(array))])
 $ x \in \mathbb{Z} \mid 0 \leq x < 256 $ \\
 This clocks in at a respectable $ O(l \cdot s) $ space complexity, where $ s $ represents the size in bits of the data type in the list; While this method could potentially be useful in other quantum algorithms, this would essentially just transpose a classic algorithm onto a quantum circuit --- In the spirit of faithfully implementing QBS, we sought a more idiomatic quantum solution.
  
-\item The other approach explored is essentially a quantum random number generator. Instead of storing the list, we create $ N = l! $ evenly balanced register states ($l!$ being the number of permutations of $array$). A set of states $ [0, N) \cap \mathbb{N} $ will be prepared, each with an even amplitude. Concisely:
+\item The other approach explored is essentially a quantum random number generator. Instead of storing the list, we create $N = l!$ evenly balanced register states ($l!$ being the number of permutations of $array$). A set of states $[0, N) \cap \mathbb{N}$ will be prepared, each with an even amplitude. Concisely:
     $$ \sum_{x=0}^{N-1} \frac{1}{\sqrt{N}} \ket{x_{BE}} $$
 Note that the quantum register will always be represented in \href{https://en.wikipedia.org/wiki/Endianness}{big-endian}.
 
-Because we're storing our number in binary, we want the power of 2 greater than or equal to $ l! $. This means we have $ O(\lceil \log_2 l! \rceil) $ space complexity, which seems scary at first. However, with present-day NISQ technology, this is significantly more favorable than $ O(l \cdot s) $ for any useful data type. Also keep in mind that because element size isn't a concern, any size element or even elements of different types could be stored in the list (as long as every type used can be compared to each other).
+Because we're storing our number in binary, we want the power of 2 greater than or equal to $l!$. This means we have $O(\lceil \log_2 l! \rceil)$ space complexity, which seems scary at first. However, with present-day NISQ technology, this is significantly more favorable than $O(l \cdot s)$ for any useful data type. Also keep in mind that because element size isn't a concern, any size element or even elements of different types could be stored in the list (as long as every type used can be compared to each other).
 
 \begin{figure}[h]
     \centering
@@ -164,10 +165,10 @@ The simplicity of this approach is actually not a bad thing: Because quantum com
 \end{enumerate}
  
 \section{Quantum Bogosort}
-\subsection{QRNG Algorithm}
+\subsection{Quantum Random Number Generation (QRNG) Algorithm}
 The main algorithm is recursive, essentially moving through the register from most to least significant qubit, performing a R\textsubscript{y} gate to split up a qubit into P 'parts,' and entangling the remaining qubits with controlled Hadamard (CH) gates. \\
 Let's use $i = 77$ as an example. Recall that for storing an integer $i$, the most significant bit (MSB) used is $\lfloor \log_2 i \rfloor$: For example, the MSB of 77 would be $\lfloor \log_2 77 \rfloor = 64$. Because QRNG generates the integers $[0, 77)$ (excluding 77 itself in order to generate 77 integers), we know that $[0, 64)$ is also being generated, because $[0, 64) \subseteq [0, 77)$. \\
-This means that every possible state of the qubit register with a leading zero (in this case, in the 64s place) should be generated. That's already really easy to do! Just use the leading zero as a control and apply Hadamard gates to the rest of the register. Here's a simple example:
+This means that every possible state of the qubit register with a leading zero (in this case, in the 64s place) should be generated. That's already really easy to do! Just use the leading zero as a control and apply Hadamard gates to the rest of the register. Here's an example:
 \begin{align*}
 & \ket{\psi} = \ket{0000000} \\
 & H(\psi_0), \ \ \ \ \ \ \ket{\psi} = \frac{1}{\sqrt{2}} \ket{0000000} + \frac{1}{\sqrt{2}} \ket{1000000} \\
@@ -176,7 +177,7 @@ This means that every possible state of the qubit register with a leading zero (
 Note that CH is a singly controlled Hadamard applied to multiple qubits, not a multi-controlled Hadamard applied to one qubit. Also note the X gate applied to the MSB because we really want an anti-controlled, not a normal controlled gate. \\
 The problem is that we've unevenly split the integer 77 into 2: $|[0, 64)| \neq |[64, 77)|$. Numbers in the range $[64, 77)$ have a $(\frac{1}{\sqrt{13}} \cdot \frac{1}{\sqrt{2}})^2$ probability of being measured whereas numbers in the $[0, 64)$ range have a $(\frac{1}{\sqrt{64}} \cdot \frac{1}{\sqrt{2}})^2$ probability of being measured. \\
 To fix this, we have to change the $\frac{1}{\sqrt{2}}$ from the Hadamard gate to something that gives us a more complex superposition; to do this we use the arbitrary rotation gates. $X$ and $Y$ gates give us the desired rotations we want, but we chose $Y$ so we don't have to worry about phase (the sign of a qubit). Phase doesn't matter in this case because only the magnitudes effect the probability of measurement, but it might be important if using QRNG in another algorithm. \\
-Superpositions can be represented using spherical coordinates. For example, on the \hyperref[fig:bsphere2]{Bloch sphere}, the spherical coordinates $(1, 0.955, 0)$ would represent the state $\sqrt{\frac{1}{3}} \ket{0} + \sqrt{\frac{2}{3}} \ket{1}$ because $\cos (0.955) \approx \sqrt{\frac{1}{3}}$. We can do simple algebra to get a $\theta$ for an arbitrary superposition. For QRNG, this looks like $\theta = 2\arccos(\sqrt{\frac{77 - MSB}{77}})$. \\
+Superpositions can be represented using spherical coordinates. For example, on the \hyperref[fig:bsphere2]{Bloch sphere}, the spherical coordinates $(1, 0.955, 0)$ would represent the state $\sqrt{\frac{1}{3}} \ket{0} + \sqrt{\frac{2}{3}} \ket{1}$ because $\cos (0.955) \approx \sqrt{\frac{1}{3}}$. We can do some algebra to get a $\theta$ for an arbitrary superposition. For QRNG, this looks like $\theta = 2\arccos(\sqrt{\frac{77 - MSB}{77}})$. \\
 \begin{figure}[H]
     \centering
     \capstart
@@ -191,14 +192,14 @@ Superpositions can be represented using spherical coordinates. For example, on t
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{images/circuits/conceptual_circuit.pdf}
-    \caption{Conceptual circuit}
+    \caption{Conceptual circuit\textsuperscript{\cite{chuang}}}
     \vspace{10mm}
     \includegraphics[width=\textwidth]{images/circuits/optimized_circuit.pdf}
-    \caption{Circuit with proper controls}
+    \caption{Circuit with proper controls\textsuperscript{\cite{chuang}}}
     \label{fig:circs}
 \end{figure}
 
-\vspace{20mm}
+\vspace{10mm}
 \noindent Minor implementation details:
 \begin{itemize}
     \item Multi-controlled Hadamard (MCH) gates are implemented manually with an ancilla qubit and multi-controlled X (MCX) gates. This could almost certainly be optimized more on a case-by-case basis (i.e. running \mintinline{python}{mode='noancilla'} for machines with fewer qubits).
@@ -277,7 +278,8 @@ plot_histogram({key[::-1]: value for key, value in count.items()})
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{images/example_circuit.png}
-    \caption{Circuit diagram for 15 'parts'}
+    \caption{Circuit diagram for 15 `parts'}
+    \label{fig:circ_diagram}
 \end{figure}
 \begin{figure}[h]
     \centering
@@ -288,7 +290,7 @@ plot_histogram({key[::-1]: value for key, value in count.items()})
 
 \subsection{Practicality Assessment}
 Obviously bogosort is not meant to be a practical algorithm, but nevertheless we will conduct a review of the efficiency of QRNG.
-\subsubsection{Time Complexity}
+\subsubsection{Complexity}
 Although the original QBS proposal assumes the quantum circuit executes in $O(1)$ time, the depth (longest path) of the circuit does scale with input. The time a quantum circuit takes to execute is the sum of the gate execution times of the gates along the longest path of the circuit, and therefore time complexity scales with circuit depth. \\
 For the integer $i$ passed into the QRNG algorithm, we allocate $\lceil \log_2 i \rceil + 1$ qubits. However, this algorithm is rather unique in that gate count and depth don't scale exactly with $i$, but rather \mintinline{python}{bin(i).count('1')}. That is, circuit depth scales with the number of ones in the binary representation of $i$. \\
 Consequently, there are large drops in complexity around powers of 2:
@@ -311,7 +313,37 @@ For example, $i = 256$ creates a circuit with depth 2 and width 17, but $i = 255
 \subsubsection{Error Rate}
 Of course, the main problem with this ballooning circuit size is the fidelity of the measurement; we work with imperfect machines and error rates can compound over time to make a measurement meaningless. 
 That being said, this is a QRNG algorithm, so the noise and error generated don't make much of a difference in this scenario (given that the noise is truly random and evenly distributed) besides occasionally measuring a number $ \geq i$. \\
-We attempted to create a script to measure the error rate of a circuit based on IBMQ benchmarks, however this only measures the probability of every gate succeeding. This doesn't take into account several errors cancelling each other out or other fortuitous errors, and consequently the measured success rate is astronomically small. A good extension on this would be to use the error rates to modify each gate: For example, an $X$ gate with error $= 1.9765\mathrm{e}{-4}$ would translate to R\textsubscript{x}($(1-1.9765\mathrm{e}{-4}) \cdot \pi$). This would allow for the approximation of the expected position on the Bloch sphere during measurement, thus providing a more accurate error rate.
+%We attempted to create a script to measure the error rate of a circuit based on IBMQ benchmarks, however this only measures the probability of every gate succeeding. This doesn't take into account several errors cancelling each other out or other fortuitous errors, and consequently the measured success rate is astronomically small. A good extension on this would be to use the error rates to modify each gate: For example, an $X$ gate with error $= 1.9765\mathrm{e}{-4}$ would translate to R\textsubscript{x}($(1-1.9765\mathrm{e}{-4}) \cdot \pi$). This would allow for the approximation of the expected position on the Bloch sphere during measurement, thus providing a more accurate error rate.
+One way we can model error is by wrapping our gates with error gates --- identity gates with an error rate corresponding to a noise profile sampled from real quantum hardware. This approach works with gate errors, including measurement and reset errors, and could also be applied to decoherence and relaxation errors. \\
+Often times noise on hardware will turn a pure quantum state into a mixed state, a composition of pure states with classical probabilities (which is \textbf{not} the same as superposition); for example, perhaps an R\textsubscript{Y}$(\frac{\pi}{2})$ will succeed $80\%$ of the time and over/undershoot by $\frac{\pi}{6}$ 20\% of the time. We can write this mixed state as
+\begin{align*}
+\ket{\psi_0} &= \frac{1}{\sqrt{2}} \left( \ket{0} + \ket{1} \right) \ \ \ \text{(80\% chance)} \\
+\ket{\psi_1} &= \frac{1}{\sqrt{4}} \ket{0} + \sqrt{\frac{3}{4}} \ket{1} \ \ \ \text{(10\% chance)} \\
+\ket{\psi_2} &= \sqrt{\frac{3}{4}} \ket{0} + \frac{1}{\sqrt{4}} \ket{1} \ \ \ \text{(10\% chance)}
+\end{align*}
+Density matrices are particularly convenient because we can represent this mixed state in a single matrix:
+\begin{align*}
+    \rho &= \frac{4}{5} \ket{\psi_0}\bra{\psi_0} + \frac{1}{10} \ket{\psi_1}\bra{\psi_1} + \frac{1}{10} \ket{\psi_2}\bra{\psi_2} \\
+    &= \frac{4}{5} \begin{bmatrix} \frac{1}{2} & \frac{1}{2} \\ \frac{1}{2} & \frac{1}{2} \end{bmatrix} + \frac{1}{10} \begin{bmatrix} \frac{1}{4} & \frac{\sqrt{3}}{4} \\ \frac{\sqrt{3}}{4} & \frac{3}{4} \\ \end{bmatrix} + \frac{1}{10} \begin{bmatrix} \frac{3}{4} & \frac{\sqrt{3}}{4} \\ \frac{\sqrt{3}}{4} & \frac{1}{4} \\ \end{bmatrix} \\
+    &= \begin{bmatrix} \frac{1}{2} & \frac{2}{5} + \frac{\sqrt{3}}{20} \\ \frac{2}{5} + \frac{\sqrt{3}}{20} & \frac{1}{2} \\ \end{bmatrix} \ \ \text{Purity: 0.9736}
+\end{align*}
+In the case of quantum bogosort, we can calculate the density matrix for the idealized ($\rho$) and noisy ($\rho'$) circuits; Both are transpiled for IBMQ Santiago and the latter is injected with Santiago's noise profile. $\rho'$'s purity of 0.42118 reflects that noise heavily affects the fidelity of the qubits.
+\begin{gather*}
+    \rho = \begin{bmatrix}
+        \frac{1}{15} & \frac{1}{15} & \cdots & \frac{1}{15} & 0 \\
+        \frac{1}{15} & \frac{1}{15} & \cdots & \frac{1}{15} & 0 \\
+        \vdots & \vdots & \ddots & \vdots & \vdots \\
+        \frac{1}{15} & \frac{1}{15} & \cdots & \frac{1}{15} & 0 \\
+        0 & 0 & \cdots & 0 & 0 \\
+    \end{bmatrix} \\
+    \rho' = \begin{bmatrix}
+        0.06997 & 0.04275 - 0.00057i & \cdots & 0.0376 + 0.00028i & 0.00036 + 0.00024i  \\
+        0.04275 + 0.00057i & 0.06646 & \cdots & 0.03687 + 0.00025i & 0.00002 + 0.0001i  \\
+        \vdots & \vdots & \ddots & \vdots & \vdots \\
+        0.0376 - 0.00028i & 0.03687 - 0.00025i & \cdots & 0.06272 & 0.00217 + 0.00045i  \\
+        0.00036 - 0.00024i & 0.00002 - 0.0001i & \cdots & 0.00217 - 0.00045i & 0.01268  \\
+    \end{bmatrix}
+\end{gather*}
 
 \subsection{Bogosort}
 This is a fairly straightforward implementation of Quantum Bogosort:
@@ -320,7 +352,7 @@ This is a fairly straightforward implementation of Quantum Bogosort:
     \item Use QRNG with parts = $l!$
     \item Using the measured value from step 2, randomly select a permutation of the list
     \item If the permutation is sorted, return
-    \item Repeat steps 2-4
+    \item Repeat steps 1-4
 \end{enumerate}
 \vspace{15mm}
 Note that with the many-worlds interpretation we can stop at step 4, because a universe where the list is sorted must exist (assuming the list can be sorted) by quantum necessity. Perhaps disappointingly, there's no destroying of universes in this algorithm.
@@ -377,17 +409,22 @@ print(f"Finished Quantum Bogosort in {end-start} seconds on list of length //
 \end{minted}
 An impressive sort time of 258.02 seconds on a 7 element list... Quite bogus, indeed.
 
+\pagebreak
+
 \section{Conclusion}
-In this paper, we implemented the quantum bogosort algorithm using QRNG to randomly permute a list and check if it's sorted. Although QBS is a joke, the QRNG algorithm implemented could probably be useful in setting states where an H\textsubscript{ALL} wouldn't do the trick. Despite the fact that we couldn't find a similar QRNG algorithm, this seems too useful to be novel. \\
+In this paper, we implemented the quantum bogosort algorithm using a novel QRNG to randomly permute the list. Although QBS is a joke, the QRNG algorithm implemented could potentially be useful in setting states where an H\textsubscript{ALL} wouldn't do the trick. \\
 The QRNG algorithm presented could be further studied and improved for efficient preparation of arbitrarily superimposed qubits. Right now, QRNG generates an interval of integers, but this could be extended to generating an even superposition of arbitrary values. Additionally, as discussed in the practicality assessment, this algorithm does not scale well due to the prevalence of multi-controlled gates. \\
-Another way to improve QBS would be to study how the list is sorted. Because the (non-unique) permutations of a list grows at $n!$, QRNG's $O(\log_2 n)$ space complexity quickly becomes overwhelmed with larger lists. Finding ways to reduce this inefficiency would be ideal, perhaps by using a 'divide and conquer' strategy (\`{a} la quicksort); However, this would defeat the purpose of bogosort! \\
-We were able to both exercise previous knowledge of quantum computing and learn new skills in data collection and presentation. Additionally, we spent more time designing this algorithm because there's no previous implementation of QBS to compare against: Consequently we got to pursue many different solutions and choose the most interesting one. \\
+Another way to improve QBS would be to study how the list is sorted. Because the (non-unique) permutations of a list grows at $n!$, QRNG's $O(\log_2 n!)$ space complexity quickly becomes overwhelmed with larger lists. Finding ways to reduce this inefficiency would be ideal, perhaps by using a `divide and conquer' strategy (\`{a} la quicksort); However, this would defeat the purpose of bogosort! \\
+Although this is one way to achieve even measurement amplitudes over a register, it's not necessarily the \textit{fastest} way; transpilation optimizations and optimal gate decompositions pose interesting extensions to this problem that are especially pertinent with current quantum computers.  \\
+%We were able to both exercise previous knowledge of quantum computing and learn new skills in data collection and presentation. Additionally, we spent more time designing this algorithm because there's no previous implementation of QBS to compare against: Consequently we got to pursue many different solutions and choose the most interesting one. \\
 
 \vspace{10mm}
 \noindent All code was written and tested with Qiskit 0.32.0 \& Python 3.8 on WSL2 Ubuntu 20.04.1.
 
 \vspace{15mm}
 \noindent \emph{We acknowledge the use of IBM Quantum services for this work. The views expressed are those of the authors, and do not reflect the official policy or position of IBM or the IBM Quantum team.\textsuperscript{\cite{ibm_21}}}
+
+\pagebreak
 
 \bibliographystyle{ieeetr}
 \nocite{*}
